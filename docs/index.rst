@@ -247,6 +247,11 @@ This is a list of all settings supported in the current release.
     by the Identity Provider in addition to the token information.
     Defaults to True.
 
+  OIDC_USE_CUSTOM_CALLBACK
+    Boolean whether to use a custom callback or not. With this option set,
+    flask-oidc will not set a callback route automatically for you, you have to
+    build a custom callback function and set the route yourself.
+
   OIDC_CALLBACK_ROUTE
     URL relative to the web root to indicate where the oidc_callback url is
     mounted on.
