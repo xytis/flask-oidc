@@ -428,7 +428,7 @@ class OpenIDConnect(object):
            Use :func:`require_login` instead.
         """
         # the auth callback and error pages don't need user to be authenticated
-        if request.endpoint in frozenset(['_oidc_callback', '_oidc_error']):
+        if request.endpoint in frozenset(['_oidc_callback', '_oidc_error', '_custom_callback']):
             return None
 
         # retrieve signed ID token cookie
@@ -539,10 +539,12 @@ class OpenIDConnect(object):
         """
         flow = copy(self.flow)
         redirect_uri = current_app.config['OVERWRITE_REDIRECT_URI']
-        if not redirect_uri:
-            flow.redirect_uri = url_for('_oidc_callback', _external=True)
-        else:
+        if redirect_uri:
             flow.redirect_uri = redirect_uri
+        elif self._custom_callback:
+            flow.redirect_uri = url_for('_custom_callback', _external=True)
+        else:
+            flow.redirect_uri = url_for('_oidc_callback', _external=True)
         return flow
 
     def redirect_to_auth_server(self, destination=None, customstate=None):
