@@ -148,7 +148,7 @@ class OpenIDConnect(object):
         app.config.setdefault('OIDC_REQUIRE_VERIFIED_EMAIL', False)
         app.config.setdefault('OIDC_OPENID_REALM', None)
         app.config.setdefault('OIDC_USER_INFO_ENABLED', True)
-        app.config.setdefault('OIDC_CUSTOM_CALLBACK_FUNCTION', "main.oidc_custom_callback")
+        app.config.setdefault('OIDC_CUSTOM_CALLBACK_FUNCTION', None)
         app.config.setdefault('OIDC_CALLBACK_ROUTE', '/oidc_callback')
         app.config.setdefault('OVERWRITE_REDIRECT_URI', False)
         app.config.setdefault("OIDC_EXTRA_REQUEST_AUTH_PARAMS", {})
@@ -428,7 +428,7 @@ class OpenIDConnect(object):
            Use :func:`require_login` instead.
         """
         # the auth callback and error pages don't need user to be authenticated
-        if request.endpoint in frozenset(['_oidc_callback', '_oidc_error', '_custom_callback']):
+        if request.endpoint in frozenset(['_oidc_callback', '_oidc_error']):
             return None
 
         # retrieve signed ID token cookie
