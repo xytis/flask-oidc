@@ -148,7 +148,7 @@ class OpenIDConnect(object):
         app.config.setdefault('OIDC_REQUIRE_VERIFIED_EMAIL', False)
         app.config.setdefault('OIDC_OPENID_REALM', None)
         app.config.setdefault('OIDC_USER_INFO_ENABLED', True)
-        app.config.setdefault('OIDC_USE_CUSTOM_CALLBACK', False)
+        app.config.setdefault('OIDC_CUSTOM_CALLBACK_FUNCTION', "main.oidc_custom_callback")
         app.config.setdefault('OIDC_CALLBACK_ROUTE', '/oidc_callback')
         app.config.setdefault('OVERWRITE_REDIRECT_URI', False)
         app.config.setdefault("OIDC_EXTRA_REQUEST_AUTH_PARAMS", {})
@@ -166,7 +166,7 @@ class OpenIDConnect(object):
 
         # register callback route and cookie-setting decorator
         if not app.config['OIDC_RESOURCE_SERVER_ONLY']:
-            if not app.config['OIDC_USE_CUSTOM_CALLBACK']:
+            if not app.config['OIDC_CUSTOM_CALLBACK_FUNCTION']:
                 app.route(app.config['OIDC_CALLBACK_ROUTE'])(self._oidc_callback)
             app.before_request(self._before_request)
             app.after_request(self._after_request)
@@ -542,7 +542,7 @@ class OpenIDConnect(object):
         if redirect_uri:
             flow.redirect_uri = redirect_uri
         elif self._custom_callback:
-            flow.redirect_uri = url_for('_custom_callback', _external=True)
+            flow.redirect_uri = url_for(current_app.config['OIDC_CUSTOM_CALLBACK_FUNCTION'], _external=True)
         else:
             flow.redirect_uri = url_for('_oidc_callback', _external=True)
         return flow
